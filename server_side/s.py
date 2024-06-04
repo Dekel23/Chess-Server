@@ -7,6 +7,8 @@ import threading
 import sqlite3
 import socket
 
+from stop_watch import stop_watch
+
 # Socket communication constants
 HOST = '192.168.1.214'
 PORT = 5000
@@ -135,7 +137,16 @@ def handle_offline(conn: socket.socket, user_manager: DB_User_Manager, name: str
     shared_vars = {'run': True, 'update': False, 'massage': list[str]}
     recieving_thread = threading.Thread(target=recieve_thread, args=(shared_vars, ))
     recieving_thread.start()
-    send(conn, name, "comupter")
+    start_time = 600
+    player_timer = stop_watch(start_time)
+    computer_timer = stop_watch(start_time)
+    send(conn, name, "comupter", player_timer.get_time())
+    turn = "player"
+
+    while shared_vars["run"]:
+        if turn == "player":
+            
+
             
 if __name__ == "__main__":
     main()

@@ -399,7 +399,8 @@ def offline_page():
 
         if shared_vars['update']:
             if shared_vars['massage'].startwith("win") or shared_vars['massage'].startwith("lose"):
-                pass
+                shared_vars['run'] = False
+                print(shared_vars['massage'])
             else:
                 [game, timer_me, timer_enemy, possiable_pos] = shared_vars['massage']
                 timer_me_text.set_text(timer_me)
