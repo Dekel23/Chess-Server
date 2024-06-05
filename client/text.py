@@ -1,7 +1,7 @@
 import pygame
 
 class Text:
-    def __init__(self, y:int, x:int, font:pygame.font.Font, text:str, color:pygame.color.Color):
+    def __init__(self, x:int, y:int, font:pygame.font.Font, text:str, color:pygame.color.Color):
         """
         Initialize a Text object.
 

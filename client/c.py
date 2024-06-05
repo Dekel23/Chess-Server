@@ -22,8 +22,8 @@ def send(*data: str) -> str:
     socket.error: If there is an error while sending the message.
     """
     try:
-        message = seperator.join(data)  # Join the data into a single string separated by seperator
-        conn.sendall(message.encode(FORMAT))  # Encode the message and send it to the server
+        message = SEPERATOR.join(data)  # Join the data into a single string separated by seperator
+        CONN.sendall(message.encode(FORMAT))  # Encode the message and send it to the server
     except socket.error as e:
         return str(e)  # Return the error message if any occurred
 
@@ -45,8 +45,8 @@ def recieve() -> str:
     The received message is stripped of leading and trailing seperators and split into a list of strings.
     """
     try:
-        message = conn.recv(MAX_LENGTH).decode(FORMAT)  # Receive the message from the server
-        return message.strip(seperator + " ").split(seperator)  # Return the message as a list of strings separated by seperator
+        message = CONN.recv(MAX_LENGTH).decode(FORMAT)  # Receive the message from the server
+        return message.strip(SEPERATOR + " ").split(SEPERATOR)  # Return the message as a list of strings separated by seperator
     except socket.error as e:
         return str(e)  # Return the error message if any occurred
 
@@ -91,21 +91,21 @@ def create_image_dictionary(directory: str) -> dict:
 
     return dict  # Return the dictionary of images
 
-def out_of_bounds(x: int, y: int) -> bool:   
-    """
-    This function checks if a given position is out of bounds of the grid.
+# def out_of_bounds(x: int, y: int) -> bool:   
+#     """
+#     This function checks if a given position is out of bounds of the grid.
 
-    Parameters:
-    x (int): The x-coordinate of the position to check.
-    y (int): The y-coordinate of the position to check.
+#     Parameters:
+#     x (int): The x-coordinate of the position to check.
+#     y (int): The y-coordinate of the position to check.
 
-    Returns:
-    bool: True if the position is out of bounds, False otherwise.
+#     Returns:
+#     bool: True if the position is out of bounds, False otherwise.
 
-    Note:
-    The grid is defined by the constants GRID_COLS and GRID_ROWS.
-    """
-    return x < 0 or x >= GRID_COLS or y < 0 or y >= GRID_ROWS
+#     Note:
+#     The grid is defined by the constants GRID_COLS and GRID_ROWS.
+#     """
+#     return x < 0 or x >= GRID_COLS or y < 0 or y >= GRID_ROWS
 
 # Socket communication's constants
 HOST = '192.168.1.214'
@@ -115,15 +115,22 @@ FORMAT = 'utf-8'
 MAX_LENGTH = 1024
 
 # Start connection to the server
-conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-conn.connect(ADDR)
-seperator = conn.recv(MAX_LENGTH).decode(FORMAT)
+CONN = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+CONN.connect(ADDR)
+SEPERATOR = CONN.recv(MAX_LENGTH).decode(FORMAT)
 
 # Reciving application's constants
-[EXIST_ERROR, NOT_EXIST_ERROR, MISSING_ERROR, SHORT_ERROR, SIGNIN_MESSAGE, SIGNUP_MESSAGE,
-GRID_ROWS, GRID_COLS, BLOCK_SIZE, BLACK_SQUARE, WHITE_SQUARE, BLACK_POSS_SQUARE, WHITE_POSS_SQUARE] = recieve()
-GRID_ROWS = int(GRID_ROWS)
-GRID_COLS = int(GRID_COLS)
+[EXIST_ERROR, NOT_EXIST_ERROR, MISSING_ERROR, SHORT_ERROR, SIGNIN_MESSAGE,
+SIGNUP_MESSAGE, GRID_ROWS, GRID_COLS, BLOCK_SIZE, WHITE_SQUARE,
+BLACK_SQUARE, PICKED_SQUARE, EATING_SQUARE, MOVING_SQUARE] = recieve()
+GRID_ROWS = eval(GRID_ROWS)
+GRID_COLS = eval(GRID_COLS)
+BLOCK_SIZE = eval(BLOCK_SIZE)
+WHITE_SQUARE = eval(WHITE_SQUARE)
+BLACK_SQUARE = eval(BLACK_SQUARE)
+PICKED_SQUARE = eval(PICKED_SQUARE)
+EATING_SQUARE = eval(EATING_SQUARE)
+MOVING_SQUARE = eval(MOVING_SQUARE)
 
 # Other application's constants
 GRID_HEIGHT = GRID_ROWS * BLOCK_SIZE
@@ -135,10 +142,10 @@ SURFACE_HEIGHT = GRID_HEIGHT + 2 * PLAYES_HEIGHT
 
 # Initialize the pygame library and application objects
 pygame.init()
-FONT = pygame.font.Font('freesansbold.ttf', 32)
+FONT = pygame.font.Font(None, 24)
 
 # Initialize the image dictionary
-IMAGE_DICT = create_image_dictionary("./images")
+IMAGE_DICT = create_image_dictionary("./client/images")
 
 class Client:
     def __init__(self) -> None:
@@ -272,18 +279,16 @@ class Client:
         while True:
             for event in pygame.event.get():
                 # If event is neither KEYDOWN nor QUIT, exit the loop
-                if event.type != pygame.KEYDOWN and event.type != pygame.QUIT:
-                    return
-                
-                # Handle escape key and quit event
-                if event.key == pygame.K_ESCAPE or event.type == pygame.QUIT:
-                    self.close_conn()
-                    return
-                
-                # Attempt signin when Enter key is pressed
-                if event.key == pygame.K_RETURN:
-                    try_signin(name_box.text, password_box.text, message)
-                
+                if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+                    # Handle escape key and quit event
+                    if event.key == pygame.K_ESCAPE or event.type == pygame.QUIT:
+                        self.close_conn()
+                        return
+                    
+                    # Attempt signin when Enter key is pressed
+                    if event.key == pygame.K_RETURN:
+                        try_signin(name_box.text, password_box.text, message)
+                 
                 # Handle events for input boxes and buttons
                 name_box.handle_event(event)
                 password_box.handle_event(event)
@@ -291,21 +296,21 @@ class Client:
                 if signup_button.handle_event(event):
                     return
                 
-                # Clear the surface
-                self.surface.fill("white")
-                # Draw input boxes, buttons, and message on the surface
-                name_box.draw(self.surface)
-                password_box.draw(self.surface)
-                signin_button.draw(self.surface)
-                signup_button.draw(self.surface)
-                message.draw(self.surface)
-                # Update the display
-                pygame.display.flip()
+            # Clear the surface
+            self.surface.fill("white")
+            # Draw input boxes, buttons, and message on the surface
+            name_box.draw(self.surface)
+            password_box.draw(self.surface)
+            signin_button.draw(self.surface)
+            signup_button.draw(self.surface)
+            message.draw(self.surface)
+            # Update the display
+            pygame.display.flip()
 
-                # Pause briefly and exit loop if signin was successful
-                if succesful:
-                    time.sleep(0.5)
-                    return
+            # Pause briefly and exit loop if signin was successful
+            if succesful:
+                time.sleep(0.5)
+                return
 
 
     def signup_page(self):

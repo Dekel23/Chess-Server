@@ -1,7 +1,7 @@
 import pygame
 
 class InputBox:
-    def __init__(self, y:int, x:int, height:int, width:int, font:pygame.font.Font, title:str) -> None:
+    def __init__(self, x:int, y:int, width:int, height:int, font:pygame.font.Font, title:str) -> None:
         """
         Initialize an instance of InputBox class.
 

@@ -3,7 +3,7 @@ from typing import Callable
 
 class Button:
     
-    def __init__(self, y:int, x:int, height:int, width:int, font:pygame.font.Font, text:str,
+    def __init__(self, x:int, y:int, width:int, height:int, font:pygame.font.Font, text:str,
                 action:Callable = None, *args:object, **kwargs:dict) -> None:
         """
         Initialize a Button object.
