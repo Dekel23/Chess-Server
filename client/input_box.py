@@ -20,7 +20,9 @@ class InputBox:
         self.x = x
         self.height = height
         self.width = width
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        # Create the rect with the center at (x, y)
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
+        self.rect.center = (self.x, self.y)
         self.font = font
         self.title = title
         self.text = ''

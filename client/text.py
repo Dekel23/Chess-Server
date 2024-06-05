@@ -21,7 +21,7 @@ class Text:
         self.text = text
         self.color = color
     
-    def set_text(self, text:str):
+    def set_text(self, text:str) -> None:
         """
         Set the text of the Text object.
 
@@ -32,6 +32,18 @@ class Text:
         None
         """
         self.text = text
+    
+    def set_color(self, color:pygame.color.Color) -> None:
+        """
+        Set the color of the Text object.
+        
+        Parameters:
+        color (pygame.color.Color): The new color of the text.
+        
+        Returns:
+        None
+        """
+        self.color = color
     
     def draw(self, surface: pygame.Surface) -> None:
         """

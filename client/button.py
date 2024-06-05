@@ -26,7 +26,9 @@ class Button:
         self.x = x
         self.height = height
         self.width = width
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        # Create the rect with the center at (x, y)
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
+        self.rect.center = (self.x, self.y)
         self.font = font
         self.text = text
         self.action = action
@@ -64,7 +66,7 @@ class Button:
 
         Returns:
         object: The result of the action function if the event is a mouse button down event and
-        the mouse position is within the button's boundaries. Otherwise, returns None.
+        the mouse position is within the button's boundaries.
 
         This method checks if the given event is a mouse button down event.
         If it is, it checks if the mouse position is within the button's boundaries.
@@ -81,6 +83,4 @@ class Button:
                 if self.action is not None:
                     return self.action(*self.args, **self.kwargs)
             else:
-                self.color = self.color_inactive
-        return None
-        
+                self.color = self.color_inactive        
