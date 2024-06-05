@@ -27,7 +27,7 @@ class InputBox:
         self.title = title
         self.text = ''
         self.color_inactive = (100, 100, 100)
-        self.action_active = (200, 200, 200)
+        self.color_active = (200, 200, 200)
         self.active = False
         self.color = self.color_inactive
     
@@ -43,12 +43,9 @@ class InputBox:
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Check if the mouse click is within the input box's boundaries
-            if self.rect.collidepoint(event.pos):
-                self.active = True
-            else:
-                self.active = False
+            self.active = self.rect.collidepoint(event.pos)
             # Change the color of the input box based on its active state
-            self.color = self.color_inactive if self.active else self.color_inactive
+            self.color = self.color_active if self.active else self.color_inactive
         elif event.type == pygame.KEYDOWN:
             # Check if the input box is active
             if self.active:

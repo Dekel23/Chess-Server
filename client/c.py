@@ -230,7 +230,7 @@ class Client:
                 return False
             
             # Send signin request to the server
-            send("Sign in", name, password)
+            send("Signin", name, password)
             # Receive server response
             result = recieve()[0]
             
@@ -272,16 +272,20 @@ class Client:
         # Create a Text object for displaying messages
         message = Text(SURFACE_WIDTH/2, SURFACE_HEIGHT/2 + 25, FONT, "", pygame.Color('red'))
         # Create buttons for signin and signup
-        signin_button = Button(SURFACE_WIDTH/2-100, SURFACE_HEIGHT/2, 100, 25, FONT, "Sign In", try_signin, name_box.text, password_box.text, message)
+        signin_button = Button(SURFACE_WIDTH/2-100, SURFACE_HEIGHT/2, 100, 25, FONT, "Sign In", try_signin)
         signup_button = Button(SURFACE_WIDTH/2+100, SURFACE_HEIGHT/2, 100, 25, FONT, "Sign Up", signin_to_signup)
-
+        succesful = False
         # Main loop for the signin page
         while True:
             for event in pygame.event.get():
                 # If event is neither KEYDOWN nor QUIT, exit the loop
-                if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+                if event.type == pygame.QUIT:
+                    self.close_conn()
+                    return
+                
+                if event.type == pygame.KEYDOWN:
                     # Handle escape key and quit event
-                    if event.key == pygame.K_ESCAPE or event.type == pygame.QUIT:
+                    if event.key == pygame.K_ESCAPE:
                         self.close_conn()
                         return
                     
@@ -292,7 +296,7 @@ class Client:
                 # Handle events for input boxes and buttons
                 name_box.handle_event(event)
                 password_box.handle_event(event)
-                succesful = signin_button.handle_event(event)
+                succesful = signin_button.handle_event(event, name_box.text, password_box.text, message)
                 if signup_button.handle_event(event):
                     return
                 

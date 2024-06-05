@@ -3,8 +3,8 @@ from typing import Callable
 
 class Button:
     
-    def __init__(self, x:int, y:int, width:int, height:int, font:pygame.font.Font, text:str,
-                action:Callable = None, *args:object, **kwargs:dict) -> None:
+    def __init__(self, x:int, y:int, width:int, height:int, font:pygame.font.Font,
+                text:str, action:Callable = None) -> None:
         """
         Initialize a Button object.
 
@@ -16,8 +16,6 @@ class Button:
         font (pygame.font.Font): The font object to use for rendering the button text.
         text (str): The text to display on the button.
         action (Callable, optional): A function to call when the button is clicked. Defaults to None.
-        *args: Additional positional arguments to pass to the action function.
-        **kwargs: Additional keyword arguments to pass to the action function.
 
         Returns:
         None
@@ -32,10 +30,8 @@ class Button:
         self.font = font
         self.text = text
         self.action = action
-        self.args = args
-        self.kwargs = kwargs
-        self.color_inactive = (100, 100, 100)
-        self.action_active = (200, 200, 200)
+        self.color_inactive = (100, 200, 100)
+        self.action_active = (200, 150, 200)
         self.color = self.color_inactive
     
     def draw(self, surface:pygame.Surface) -> None:
@@ -57,13 +53,15 @@ class Button:
         text_rect = text_surface.get_rect(center=self.rect.center)
         surface.blit(text_surface, text_rect)
     
-    def handle_event(self, event:pygame.event.Event) -> object:
+    def handle_event(self, event:pygame.event.Event, *args:object, **kwargs:dict) -> object:
         """
         Handle mouse events for the button.
 
         Parameters:
         event (pygame.event.Event): The event to handle.
-
+        *args: Additional positional arguments to pass to the action function.
+        **kwargs: Additional keyword arguments to pass to the action function.
+        
         Returns:
         object: The result of the action function if the event is a mouse button down event and
         the mouse position is within the button's boundaries.
@@ -81,6 +79,6 @@ class Button:
                 self.color = self.action_active
                 # Call the action function if it exists with the appropriate argument
                 if self.action is not None:
-                    return self.action(*self.args, **self.kwargs)
+                    return self.action(*args, **kwargs)
             else:
                 self.color = self.color_inactive        
